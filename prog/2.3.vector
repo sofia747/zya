@@ -1,0 +1,75 @@
+//Дан список точек в пространстве (например, vector<vector<double>> a, 
+// где внутренний вектор - это координаты точки в пространстве.). 
+// Дана точка  Х в пространстве. Используя библиотеки numeric и functional, 
+// найти максимальное расстояние от точки X  до  остальных точек в пространстве.
+#include<iostream>
+#include<numeric>
+#include<functional>
+#include<vector>
+#include<cmath>
+using namespace std;
+
+double dist(vector<double>p1, vector<double>p2) {
+    double sum = 0.0;
+    for (int i = 0; i < p1.size(); i++) {
+        double diff = p1[i] - p2[i];
+        sum += diff * diff;
+    }
+    return sqrt(sum);
+}
+
+int main() {
+    setlocale(LC_ALL, "RUS");
+    int n;//кол-во точек
+    cout << "n = "; cin >> n;
+    // Создаем вектор векторов для хранения всех точек
+    // a - это список точек, каждая точка - вектор из двух координат (x, y)
+    vector<vector<double>> a;
+
+    for (int i = 0; i < n; i++) {
+        double x, y;
+        cout << "точка" << i + 1 << ": ";
+        cin >> x >> y;
+        vector<double> p = { x, y };
+        // Добавляем точку p в общий список точек a
+        a.push_back(p);
+    }
+
+    double x1, y1;
+    cout << "X (x,y): ";
+    cin >> x1 >> y1;
+    vector<double> X{ x1, y1 };
+
+    // ИСПОЛЬЗУЕМ БИБЛИОТЕКУ functional
+    // Создаем новую функцию dx с помощью bind
+    // bind "привязывает" первый аргумент функции dist к точке X
+    // placeholders::_1 означает, что второй аргумент будет передан позже
+    // Теперь dx(точка) автоматически вызывает dist(X, точка)
+    auto dx = bind(dist, X, placeholders::_1);
+    // Создаем вектор для хранения всех расстояний от X до каждой точки
+    vector<double> distances;
+
+    // Цикл по всем точкам из списка a
+    for (int i = 0; i < a.size(); i++) {
+        // Вычисляем расстояние от X до i-й точки с помощью функции dx
+        double d = dx(a[i]);
+        distances.push_back(d);
+        cout << "Расстояние до точки " << i + 1 << ": " << d << endl;
+    }
+
+    // ИСПОЛЬЗУЕМ БИБЛИОТЕКУ numeric
+    // Функция accumulate проходит по всем элементам вектора и накапливает результат
+    // distances.begin() - итератор на начало вектора
+    // distances.end() - итератор на конец вектора
+    // distances[0] - начальное значение (первое расстояние)
+    // [](double a, double b) { return max(a, b); } - лямбда-функция, 
+    // которая сравнивает два числа и возвращает большее
+    // В результате maxDist получает максимальное расстояние
+    double maxDist = accumulate(distances.begin(), distances.end(),
+        distances[0],
+        [](double a, double b) { return max(a, b); });
+    cout << "Максимальное расстояние: " << maxDist << endl;
+
+    system("pause");
+    return 0;
+}
