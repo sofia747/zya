@@ -1,0 +1,61 @@
+// В файле содержится двумерный массив размерностью n×n. В новый файл вывести отсортированный массив. Столбцы по убыванию помощью поразрядной сортировки от младшего разряда к старшему (LSD)
+#include<iostream>
+#include<vector>
+#include<cmath>
+#include<fstream>
+using namespace std;
+
+int getDigit(int number, int digit) {
+	for (int i = 0; i < digit; i++) {
+		number = number / 10;
+	}
+	return number % 10;
+}
+void lsdSort(vector<int>& column) {
+	if (column.empty()) return;
+
+	int max_n = column[0]; //max число в ст
+	for (int i = 0; i < column.size(); i++) {
+		if (column[i] > max_n)
+			max_n = column[i];
+	}
+
+	int max_d = 0; //кол-во разрядов у max числа
+	if (max_n == 0)
+		max_d = 1;
+	else {
+		int a = max_n;
+		while (a > 0) {
+			max_d++;
+			a /= 10;
+		}
+	}
+
+	for (int d = 0; d < max_d; d++) {
+		vector<vector<int>> b(10); // для цифр от 1 до 10
+
+		for (int i = 0; i < column.size(); i++) {
+			int dig = getDigit(column[i], d);
+			b[dig].push_back(column[i]);
+		}
+
+		int ix = 0;
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < b[i].size(); j++) {
+				column[ix] = b[i][j];
+				ix++;
+			}
+		}
+	}
+
+	int l = 0;
+	int r = column.size() - 1;
+	while (l < r) {
+		int temp = column[l];
+		column[l] = column[r];
+		column[r] = temp;
+		l++;
+		r--;
+	}
+ }
+
