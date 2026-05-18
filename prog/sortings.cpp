@@ -59,3 +59,57 @@ void lsdSort(vector<int>& column) {
 	}
  }
 
+void printMatrix(const vector<vector<int>>& a) {
+    int n = a.size();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << a[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+int main() {
+    ifstream input("input.txt");
+    ofstream output("output.txt");
+    
+    int n;
+    input >> n;
+    vector<vector<int>> a(n, vector<int>(n));
+    
+    // Чтение матрицы из файла
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            input >> a[i][j];
+        }
+    }
+    
+    // Сортировка каждого столбца
+    for (int j = 0; j < n; j++) {
+        vector<int> column(n);
+        for (int i = 0; i < n; i++) {
+            column[i] = a[i][j];
+        }
+        
+        lsdSort(column);
+        
+        for (int i = 0; i < n; i++) {
+            a[i][j] = column[i];
+        }
+    }
+    
+    // Запись результата в файл
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            output << a[i][j] << " ";
+        }
+        output << endl;
+    }
+    
+    input.close();
+    output.close();
+    
+    // Вывод на экран
+    printMatrix(a);
+    
+    return 0;
+}
