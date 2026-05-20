@@ -24,3 +24,32 @@ void print() {
 		cout << "| ∅" << endl;
 	}
 }
+int main() {
+	setlocale(LC_ALL, "RUS");
+	cout << "кол-во вершин = "; cin >> n;
+	Gr.resize(n);
+	
+	int m;
+	cout << "кол-во ребер = "; cin >> m;
+	
+	if (m) {
+		cout << "ребра " << endl;
+		for (int j = 0; j < m; j++) {
+			int x, y;
+			cin >> x >> y;
+			if (x < 0 || x >= n || y < 0 || y >= n) {
+				continue;
+			}
+			Gr[x].push_back(y);
+		}
+	}else cout << "граф пустой " << endl;
+
+	print();
+	int a, b;
+	cout << "a = "; cin >> a;
+	cout << "b = "; cin >> b;
+
+	add(a, b);
+	print();
+	return 0;
+}
